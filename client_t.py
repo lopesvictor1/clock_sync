@@ -13,7 +13,6 @@ LOCAL_TIME = 0
 
 comandos["!time"]
 clocks = [1, 3, 5]
-
 def send_client_t()
 
 
@@ -29,11 +28,7 @@ def count_time(value):
         count += 1
         time.sleep(1)
 
-def main():
-    threading.Thread(target=count_time).start()
-    with socket.socket(socket.AF_INET, sock.SOCK_STREAM) as s:
-        s.connect((HOST, PORT))    
+threading.Thread(target=count_time).start()
+with socket.socket(socket.AF_INET, sock.SOCK_STREAM) as s:
+    s.connect(ST, PORT))    
 
-
-if if __name__ == "__main__":
-    sys.exit(main())

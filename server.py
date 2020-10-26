@@ -45,7 +45,7 @@ def format(msg):
 
 
 
-def update_time_client(conn, addr):
+def update_time_switch(conn, addr):
     data = conn.recv(1024)
     if len(data) < 1:
         print("error receiving message from host")
@@ -112,7 +112,7 @@ def main():
             s.listen()                                                                       
             conn, addr = s.accept()
             print('Estabelecida conexão com {}.'.format(addr))
-            threading.Thread(target=update_time_client, args=(conn, addr)).start()
+            threading.Thread(target=update_time_switch, args=(conn, addr)).start()
                         
 
 if __name__ == "__main__":
