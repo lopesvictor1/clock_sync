@@ -15,7 +15,8 @@ HOST = '127.0.0.1'  # IP padrão do Host Local
 PORT = 65431        # Porta escolhida para conexão
 
 GLOBAL_TIME = 0 #tempo do controlador
-valid = false #diz se o tempo do controlador esta atualizado
+valid = False #diz se o tempo do controlador esta atualizado
+count = 0
 
 t1_ip = '10.1.1.1'
 t2_ip = '10.1.1.2'
@@ -48,9 +49,9 @@ def update_time_client(conn, addr):
     data = conn.recv(1024)
     if len(data) < 1:
         print("error receiving message from host")
-        break
+        return
     else:
-        if valid == true:
+        if valid == truethreading.Lock():
             conn.sendall(str(GLOBAL_TIME).encode("utf-8"))
         else:
             update_controller_time()
@@ -72,8 +73,8 @@ def update_controller_time():
     
     GLOBAL_TIME = time_sum // 3
     valid = True
+    count = 0
     time_sum = 0
-    lock = threading.Lock()
 
        
 def send_request(ip, port):
@@ -89,10 +90,13 @@ def send_request(ip, port):
 def count_time():
     valid = False
     count = 0
+    GLOBAL_TIME = 0
     while(True):
-        if count > 10:
-            valid = false
+        if count > 20:
+            valid = False
+            count = 0
         GLOBAL_TIME += 1
+        count += 1
         time.sleep(1)
     
 
@@ -100,7 +104,7 @@ def count_time():
 
 #funcao principal do sistema
 def main():
-    threading.Thread(target=count_time, args=(conn, addr)).start()
+    threading.Thread(target=count_time).start()
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:                            
         s.bind((HOST, PORT)) #porta do controlador conectada com os clientes (h1,h2,h3)                                                               
         print("Aguardando Conexão...") 
