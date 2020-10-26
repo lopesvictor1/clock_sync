@@ -14,23 +14,25 @@ LOCAL_TIME = 0
 comandos = ["!time"]
 clocks = [1, 3, 5]
 
-#def send_client_t():
 
 
 
-
-def count_time(value):
+def count_time():
     valid = False
+    count = 0
+    LOCAL_TIME = 0
     while(True):
         if count > 20:
             valid = False
             count = 0
         x = random.randint(0, 2)
-        GLOBAL_TIME += clocks[x]   
+        LOCAL_TIME += clocks[x]   
         count += 1
+        print("Local time: %d", LOCAL_TIME)
         time.sleep(1)
 
 
-threading.Thread(target=count_time).start()
-with socket.socket(socket.AF_INET, sock.SOCK_STREAM) as s:
+threading.Thread(target=count_time,).start()
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))    
+    s.sendall(comandos[0].encode("utf-8"))

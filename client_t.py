@@ -28,7 +28,8 @@ def count_time(value):
         count += 1
         time.sleep(1)
 
-threading.Thread(target=count_time).start()
-with socket.socket(socket.AF_INET, sock.SOCK_STREAM) as s:
-    s.connect(ST, PORT))    
 
+threading.Thread(target=count_time).start()
+with socket.socket(etsocket.AF_INET, sock.SOCK_STREAM) as s:
+    s.connect(ST, PORT))    
+    

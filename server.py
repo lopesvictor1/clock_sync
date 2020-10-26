@@ -46,16 +46,17 @@ def format(msg):
 
 
 def update_time_switch(conn, addr):
-    data = conn.recv(1024)
-    if len(data) < 1:
-        print("error receiving message from host")
-        return
-    else:
-        if valid == truethreading.Lock():
-            conn.sendall(str(GLOBAL_TIME).encode("utf-8"))
+    while True:
+        data = conn.recv(1024)
+        if len(data) < 1:
+            print("error receiving message from host")
+            return
         else:
-            update_controller_time()
-            conn.sendall(str(GLOBAL_TIME).encode("utf-8"))
+            if valid == truethreading.Lock():
+                conn.sendall(str(GLOBAL_TIME).encode("utf-8"))
+            else:
+                update_controller_time()
+                conn.sendall(str(GLOBAL_TIME).encode("utf-8"))
 
 
 
