@@ -23,10 +23,10 @@ t2_ip = '10.1.1.2'
 t3_ip = '10.1.1.3'
 t_port = 65532 #porta aberta no lado dos 't'
 
-time_sum = 0
+TIME_SUM = 0
 lock = threading.Lock()
 
-#funcao para formatar o mensagem recebida do servidor
+#funcao para formatar o mensagem recebida gdo servidor
 def format(msg):
     last = len(msg)-1
     bar = False
@@ -52,7 +52,7 @@ def update_time_switch(conn, addr):
             print("error receiving message from host")
             return
         else:
-            if valid == truethreading.Lock():
+            if valid == True:
                 conn.sendall(str(GLOBAL_TIME).encode("utf-8"))
             else:
                 update_controller_time()
@@ -62,30 +62,29 @@ def update_time_switch(conn, addr):
 
 #pede para os servidor de sincronização 'T' os valores para fazer a média do tempo no controlador
 def update_controller_time():
-    threads = [threading.Thread(target=send_request,
-    args=(t1_ip, t_port)), threading.Thread(target=send_request, args=(t2_ip, t_port)),
-    threading.Thread(target=send_request, args=(t3_ip, t_port))]
-     
+    #threads = [threading.Thread(target=send_request, args=(t1_ip, t_port)), threading.Thread(target=send_request, args=(t2_ip, t_port)), threading.Thread(target=send_request, args=(t3_ip, t_port))]
+    threads = [threading.Thread(target=send_request, args=(t1_ip, t_port))]
+    #busca os horários dos servidores 'T' 
     for t in threads:
         t.daemon = True
         t.start()
     for t in threads:
         t.join()
     
-    GLOBAL_TIME = time_sum // 3
+    GLOBAL_TIME = TIME_SUM // 3
     valid = True
     count = 0
-    time_sum = 0
+    TIME_SUM = 0
 
        
 def send_request(ip, port):
-    global time_sum
+    global TIME_SUM
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:                        #cria um socket utilizando os protocolos IPv4 e TCP
         s.connect((ip, port))
         s.sendall("!time")
         data = s.recv(1024)
         with lock:
-            time_sum += int(format(str(data)))
+            TIME_SUM += int(format(str(data)))
 
 
 def count_time():
@@ -106,6 +105,8 @@ def count_time():
 #funcao principal do sistema
 def main():
     threading.Thread(target=count_time).start()
+    TIME_SUM = 0
+    update_controller_time()
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:                            
         s.bind((HOST, PORT)) #porta do controlador conectada com os clientes (h1,h2,h3)                                                               
         print("Aguardando Conexão...") 
