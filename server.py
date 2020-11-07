@@ -11,7 +11,7 @@ import threading
 
 #H
 
-HOST = '127.0.0.1'  # IP padrão do Host Local
+HOST = '10.1.1.4'  # IP padrão do Host Local
 PORT = 65431        # Porta escolhida para conexão
 
 GLOBAL_TIME = 0 #tempo do controlador
@@ -62,6 +62,7 @@ def update_time_switch(conn, addr):
 
 #pede para os servidor de sincronização 'T' os valores para fazer a média do tempo no controlador
 def update_controller_time():
+    TIME_SUM = 0
     #threads = [threading.Thread(target=send_request, args=(t1_ip, t_port)), threading.Thread(target=send_request, args=(t2_ip, t_port)), threading.Thread(target=send_request, args=(t3_ip, t_port))]
     threads = [threading.Thread(target=send_request, args=(t1_ip, t_port))]
     #busca os horários dos servidores 'T' 

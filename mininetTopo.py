@@ -32,23 +32,27 @@ class Custom(Topo):
         h2 = self.addHost('h2', ip='10.1.2.2', defaultRoute='via 10.1.1.4')
         h3 = self.addHost('h3', ip='10.1.2.3', defaultRoute='via 10.1.1.4')
 
-        nat = self.addHost('nat', ip='10.1.1.4', cls=NAT, isNamespace=False)
+        server = self.addHost('server', ip='10.1.1.4')
 
         s1 = self.addSwitch('s1')
         s2 = self.addSwitch('s2')
+        s3 = self.addSwitch('s3')
 
+        #conecta host com seu switch
+        self.addLink(s3, server)
+        self.addLink(s1, s2)
+        self.addLink(s1, s3)
+        self.addLink(s2, s3)       
 
         #criação dos links entre os 'Switches'
         self.addLink(s1, h1)
         self.addLink(s1, h2)
         self.addLink(s1, h3)
-        self.addLink(s1, nat)
         
         #criação dos links entre os 'T'
         self.addLink(s2, t1)
         self.addLink(s2, t2)
         self.addLink(s2, t3)
-        self.addLink(s2, nat)       
 
         #criação dos links entre os 'T' e o Host 'H'
 

@@ -4,7 +4,7 @@ import time
 import threading
 import random
 
-HOST = '127.0.0.1'
+HOST = '10.1.1.4'
 PORT = 65431
 
 LOCAL_TIME = 0
