@@ -31,6 +31,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             count = 0  
             s.sendall("!time".encode("utf-8"))
             data = s.recv(2048)
+            print("Recebido valor {}.".format(data.decode("utf-8")))
             LOCAL_TIME = int(data.decode("utf-8"))
         LOCAL_TIME += value   
         count += 1

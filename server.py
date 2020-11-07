@@ -4,6 +4,7 @@ import time
 import ssl
 import random
 import threading
+import zmq
 
 #  -  s2 -     -  T1
 #s1         H - T2
@@ -22,6 +23,8 @@ t1_ip = '10.1.1.1'
 t2_ip = '10.1.1.2'
 t3_ip = '10.1.1.3'
 t_port = 65532 #porta aberta no lado dos 't'
+context = zmq.Context()
+
 
 TIME_SUM = 0
 lock = threading.Lock()
@@ -53,18 +56,21 @@ def update_time_switch(conn, addr):
             return
         else:
             if valid == True:
+                print("Enviado valor {} para conexão: {}.".format(str(GLOBAL_TIME), str(addr)))
                 conn.sendall(str(GLOBAL_TIME).encode("utf-8"))
             else:
                 update_controller_time()
+                print("Enviado valor {} para conexão: {}.".format(str(GLOBAL_TIME), str(addr)))
                 conn.sendall(str(GLOBAL_TIME).encode("utf-8"))
 
 
 
 #pede para os servidor de sincronização 'T' os valores para fazer a média do tempo no controlador
 def update_controller_time():
-    TIME_SUM = 0
-    #threads = [threading.Thread(target=send_request, args=(t1_ip, t_port)), threading.Thread(target=send_request, args=(t2_ip, t_port)), threading.Thread(target=send_request, args=(t3_ip, t_port))]
-    threads = [threading.Thread(target=send_request, args=(t1_ip, t_port))]
+    global TIME_SUM
+    global GLOBAL_TIME
+    threads = [threading.Thread(target=send_request, args=(t1_ip, t_port)), threading.Thread(target=send_request, args=(t2_ip, t_port)), threading.Thread(target=send_request, args=(t3_ip, t_port))]
+    #threads = [threading.Thread(target=send_request, args=(t1_ip, t_port))]
     #busca os horários dos servidores 'T' 
     for t in threads:
         t.daemon = True
@@ -80,12 +86,14 @@ def update_controller_time():
        
 def send_request(ip, port):
     global TIME_SUM
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:                        #cria um socket utilizando os protocolos IPv4 e TCP
-        s.connect((ip, port))
-        s.sendall("!time")
-        data = s.recv(1024)
-        with lock:
-            TIME_SUM += int(format(str(data)))
+    zmq_sock = context.socket(zmq.REQ)
+    zmq_sock.connect("tcp://{}:{}".format(ip, port))
+    zmq_sock.send("!time".encode("utf-8"))
+    data = zmq_sock.recv()
+    zmq_sock.close()
+    print("Recebido o valor {}.".format(data.decode("utf-8")))
+    with lock:
+        TIME_SUM += int(data.decode("utf-8"))
 
 
 def count_time():
@@ -114,8 +122,9 @@ def main():
         while True:                                                                          
             s.listen()                                                                       
             conn, addr = s.accept()
-            print('Estabelecida conexão com {}.'.format(addr))
+            print('Estabelecida conexão com {}.'.format(str(addr)))
             threading.Thread(target=update_time_switch, args=(conn, addr)).start()
+
                         
 
 if __name__ == "__main__":
