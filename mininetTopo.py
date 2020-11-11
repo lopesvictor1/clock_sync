@@ -23,16 +23,16 @@ class Custom(Topo):
         Topo.__init__(self)
 
         #declaracao da subrede dos 'T'
-        t1 = self.addHost('t1', ip='10.1.1.1', defaultRoute='via 10.1.1.4')
-        t2 = self.addHost('t2', ip='10.1.1.2', defaultRoute='via 10.1.1.4')
-        t3 = self.addHost('t3', ip='10.1.1.3', defaultRoute='via 10.1.1.4')
+        t1 = self.addHost('temp1', ip='10.1.1.1')
+        t2 = self.addHost('temp2', ip='10.1.1.2')
+        t3 = self.addHost('temp3', ip='10.1.1.3')
 
         #declaracao da subrede dos 'Switches'
-        h1 = self.addHost('h1', ip='10.1.2.1', defaultRoute='via 10.1.1.4')
-        h2 = self.addHost('h2', ip='10.1.2.2', defaultRoute='via 10.1.1.4')
-        h3 = self.addHost('h3', ip='10.1.2.3', defaultRoute='via 10.1.1.4')
+        h1 = self.addHost('switch1', ip='10.1.2.1')
+        h2 = self.addHost('switch2', ip='10.1.2.2')
+        h3 = self.addHost('switch3', ip='10.1.2.3')
 
-        controller = self.addHost('controller', ip='10.1.1.4')
+        controller = self.addHost('control', ip='10.1.1.4')
 
         s1 = self.addSwitch('s1')
         s2 = self.addSwitch('s2')
