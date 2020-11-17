@@ -4,44 +4,106 @@ import time
 import threading
 import random
 import argparse
+import zmq
+import json
 
 HOST = '10.1.1.4'
 PORT = 65431
 
 LOCAL_TIME = 0
+valid = True
+count = 0
 
-DEFAULT_NUMBER = 1
+DEFAULT_NUMBER = 10
 DEFAULT_MODE = 'clock_on'
 
 comandos = ["!time"]
 clocks = [1, 2, 3, 4, 5]
+logic_offset = 0
 
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+
+def count_time(value, f):
+    global valid
+    global LOCAL_TIME
+    global logic_offset
+    global count
+    valid = True
+    count = 0
+    LOCAL_TIME = 0
+    while(True):
+        print("Local time: {}".format(LOCAL_TIME), file=f, flush=True)
+        print("Logic Offset: " + str(logic_offset), file=f, flush=True)
+        print("Local time: {}".format(LOCAL_TIME))
+        if count > 5:
+            valid = False
+            count = 0
+        LOCAL_TIME += value + logic_offset
+        count += 1
+        time.sleep(1)
+
+
+def update_local_time(data):
+    global LOCAL_TIME
+    global logic_offset
+    data_list = json.loads(data)
+    a = data_list[0]
+    b = LOCAL_TIME
+    x = data_list[1]
+    y = data_list[2]
+
+    log_offset = (y - x) - (b - a) // 2
+    if log_offset != 0:
+        logic_offset = (y - x) - (b - a) // 2
+        
+    LOCAL_TIME += (x-a + y-b) // 2
+
+
+
+
+
+
+def main():
+    global valid
+    global HOST
+    global PORT
     parser = argparse.ArgumentParser(description="Time Calculator")
     help_msg = "Switch"
     parser.add_argument("--number", "-n", help=help_msg, default=DEFAULT_NUMBER, type=str)
     parser.add_argument("--mode", "-m", help=help_msg, default=DEFAULT_MODE, type=str)
     args = parser.parse_args()
-    f = open('switch{}.txt'.format(args.number), 'w')
-    value = clocks[random.randint(0, len(clocks)-1)]
-    print("Clock: {}".format(value), file=f, flush=True)
-    count = 0
-    LOCAL_TIME = 0
+
+    execution_type = ""
     if args.mode == 'clock_on':
-        s.connect((HOST, PORT))    
-        s.sendall("!time".encode("utf-8"))
-        data = s.recv(2048)
-        LOCAL_TIME = int(data.decode("utf-8"))
+        mode = 'normal'
+    elif args.mode == 'clock_off':
+        mode = 'noclocksync'
+    elif args.mode == 'delay':
+        mode = 'delay'
+    f = open('switch{}_{}.txt'.format(args.number, execution_type), 'w')
+
+    value = clocks[random.randint(0, len(clocks)-1)]
+    threading.Thread(target=count_time, args=(value, f)).start()
+    print("Clock: {}".format(value), file=f, flush=True)
+
+    context = zmq.Context()
+    zmq_sock = context.socket(zmq.DEALER)
+    identity = args.number.encode("utf-8")
+    zmq_sock.setsockopt(zmq.IDENTITY, identity)
+    zmq_sock.connect("tcp://{}:{}".format(HOST, PORT))
 
     while(True):
-        if count >= 5 and args.mode == 'clock_on':
-            count = 0  
-            s.sendall("!time".encode("utf-8"))
-            data = s.recv(2048)
-            print("Recebido valor {}.".format(data.decode("utf-8")), file=f, flush= True)
-            LOCAL_TIME = int(data.decode("utf-8"))
-        LOCAL_TIME += value   
-        count += 1
-        print("Local time: {}".format(LOCAL_TIME), file=f, flush=True)
-        time.sleep(1)
+        if valid == False and args.mode == 'clock_on':
+            zmq_sock.send(str(LOCAL_TIME).encode("utf-8"))
+            data = zmq_sock.recv()
+            print("Recebido valor {}.".format(data.decode("utf-8")), file=f, flush=True)
+            update_local_time(data.decode("utf-8"))
+            valid = True
+            count = 0
+                
+        
+
+
+
+if __name__ == "__main__":
+    main()
