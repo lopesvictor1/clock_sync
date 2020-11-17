@@ -33,7 +33,6 @@ def count_time(value, f):
     LOCAL_TIME = 0
     while(True):
         print("Local time: {}".format(LOCAL_TIME), file=f, flush=True)
-        print("Logic Offset: " + str(logic_offset), file=f, flush=True)
         print("Local time: {}".format(LOCAL_TIME))
         if count > 5:
             valid = False
@@ -52,11 +51,16 @@ def update_local_time(data):
     x = data_list[1]
     y = data_list[2]
 
-    log_offset = (y - x) - (b - a) // 2
-    if log_offset != 0:
-        logic_offset = (y - x) - (b - a) // 2
-        
-    LOCAL_TIME += (x-a + y-b) // 2
+
+    print ("a={}, b={}, x={}, y={}".format(a,b,x,y))
+    logic_offset += ((y - x)//2) - ((b - a)//2)
+    print("logic offset: " + str(logic_offset))
+    if logic_offset < 1:
+        logic_offset = 1
+    
+    test_time = LOCAL_TIME + ((x-a + y-b) // 2)
+    if test_time > LOCAL_TIME:
+        LOCAL_TIME += (x-a + y-b) // 2
 
 
 
@@ -75,11 +79,11 @@ def main():
 
     execution_type = ""
     if args.mode == 'clock_on':
-        mode = 'normal'
+        execution_type = 'normal'
     elif args.mode == 'clock_off':
-        mode = 'noclocksync'
+        execution_type = 'noclocksync'
     elif args.mode == 'delay':
-        mode = 'delay'
+        execution_type = 'delay'
     f = open('switch{}_{}.txt'.format(args.number, execution_type), 'w')
 
     value = clocks[random.randint(0, len(clocks)-1)]

@@ -55,88 +55,64 @@ class CustomTopo(Topo):
 
 def main():
 
-    #executando com clock_sync
+    parser = argparse.ArgumentParser(description="Orquestrador")
+    help_msg = "Orquestrador"
+    parser.add_argument("--mode", "-m", help=help_msg, default=DEFAULT_MODE, type=str)
+    args = parser.parse_args()
+
     os.system('sudo mn --clean')
-    os.system('sudo rm switch1_normal.txt')
-    os.system('sudo rm switch2_normal.txt')
-    os.system('sudo rm switch3_normal.txt')
     os.system('sudo rm controlador.txt')
 
 
-    topo = CustomTopo(False)
+    #executando com clock_sync
+    if args.mode == 'clock_on':
+        os.system('sudo rm switch1_normal.txt')
+        os.system('sudo rm switch2_normal.txt')
+        os.system('sudo rm switch3_normal.txt')
+        topo = CustomTopo(False)
+
+        cmd_control = 'python3 controlador.py &'
+        cmd_s1 = 'python3 switch.py -n 1 &'
+        cmd_s2 = 'python3 switch.py -n 2 &'
+        cmd_s3 = 'python3 switch.py -n 3 &'
+
+
+    elif args.mode == 'clock_off':
+        os.system('sudo rm switch1_noclocksync.txt')
+        os.system('sudo rm switch2_noclocksync.txt')
+        os.system('sudo rm switch3_noclocksync.txt')
+        topo = CustomTopo(False)
+
+        cmd_control = 'python3 controlador.py &'
+        cmd_s1 = 'python3 switch.py -n 1 -m clock_off &'
+        cmd_s2 = 'python3 switch.py -n 2 -m clock_off &'
+        cmd_s3 = 'python3 switch.py -n 3 -m clock_off &'
+    elif args.mode == 'delay':
+        os.system('sudo rm switch1_delay.txt')
+        os.system('sudo rm switch2_delay.txt')
+        os.system('sudo rm switch3_delay.txt')  
+        topo = CustomTopo(True)
+
+        cmd_control = 'python3 controlador.py &'
+        cmd_s1 = 'python3 switch.py -n 1 -m delay &'
+        cmd_s2 = 'python3 switch.py -n 2 -m delay &'
+        cmd_s3 = 'python3 switch.py -n 3 -m delay &'
+    else:
+        print("Modo inválido, por favor tentar -m = 'clock_on', 'clock_off' ou 'delay'")
+
+
+
     net = Mininet(topo=topo, host=Host, link=TCLink)
     net.start()
-
-    cmd_control = 'python3 controlador.py &'
-    cmd_s1 = 'python3 switch.py -n 1 &'
-    cmd_s2 = 'python3 switch.py -n 2 &'
-    cmd_s3 = 'python3 switch.py -n 3 &'
-
 
     s1 = net.getNodeByName('client1')
     s2 = net.getNodeByName('client2')
     s3 = net.getNodeByName('client3')    
     control = net.getNodeByName('control')
 
-
-    control.cmd(cmd_control)
-
-    time.sleep(2)
-    s1.cmd(cmd_s1)
-    s2.cmd(cmd_s2)
-    s3.cmd(cmd_s3)
-
-    time.sleep(60)
-
-    net.stop()
-
-    #Executa sem utilizar o clock_sync
-
-    os.system('sudo mn --clean')
-    os.system('sudo rm switch1_noclocksync.txt')
-    os.system('sudo rm switch2_noclocksync.txt')
-    os.system('sudo rm switch3_noclocksync.txt')
-    os.system('sudo rm controlador.txt')
-
-    topo = CustomTopo(False)
-    net = Mininet(topo=topo, host=Host, link=TCLink)
-    net.start()
-
-    cmd_control = 'python3 controlador.py &'
-    cmd_s1 = 'python3 switch.py -n 1 -m clock_off &'
-    cmd_s2 = 'python3 switch.py -n 2 -m clock_off &'
-    cmd_s3 = 'python3 switch.py -n 3 -m clock_off &'
-
     control.cmd(cmd_control)
     time.sleep(2)
-    
-    s1.cmd(cmd_s1)
-    s2.cmd(cmd_s2)
-    s3.cmd(cmd_s3)
 
-    time.sleep(60)
-
-    net.stop()
-
-    #Executa com clock_sync, mas com delay em um dos links
-    os.system('sudo mn --clean')
-    os.system('sudo rm switch1_delay.txt')
-    os.system('sudo rm switch2_delay.txt')
-    os.system('sudo rm switch3_delay.txt')
-    os.system('sudo rm controlador.txt')
-
-    topo = CustomTopo(True)
-    net = Mininet(topo=topo, host=Host, link=TCLink)
-    net.start()
-
-    cmd_control = 'python3 controlador.py &'
-    cmd_s1 = 'python3 switch.py -n 1 -m delay &'
-    cmd_s2 = 'python3 switch.py -n 2 -m delay &'
-    cmd_s3 = 'python3 switch.py -n 3 -m delay &'
-
-    control.cmd(cmd_control)
-    time.sleep(2)
-    
     s1.cmd(cmd_s1)
     s2.cmd(cmd_s2)
     s3.cmd(cmd_s3)
