@@ -3,9 +3,12 @@
 sudo python3 orquestrador.py -m clock_off
 clock synchronization algorithm
 
-## Requisitos:
+## Requirements:
 ZMQ:
 * pip install pyzmq
+
+Mininet:
+* 
 
 Python 3 (&ge; 3.3):
 * apt install python3
