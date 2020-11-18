@@ -30,7 +30,7 @@ def count_time(f):
     count = 0
     GLOBAL_TIME = 0
     while(True):
-        print("Local Time: {}".format(GLOBAL_TIME), file=f, flush=True)
+        print("Local time: {}".format(GLOBAL_TIME), file=f, flush=True)
         if count > 8:
             valid = False
             count = 0

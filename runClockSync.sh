@@ -1,6 +1,6 @@
 #!/bin/bash
 
-outFile="clock_sync.out"
+outFile="CLOCK_SYNC.out"
 
 N=30
 echo "#s1_normal s1_noclocksync.txt s1_delay s2_normal s2_noclocksync.txt s2_delay s3_normal s3_noclocksync.txt s3_delay controller" >> outFile
