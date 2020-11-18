@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from mininet.topo import Topo
 from mininet.node import Host
 from mininet.link import TCLink
@@ -5,7 +8,6 @@ from mininet.net import Mininet
 from mininet.log import lg, info
 from mininet.util import dumpNodeConnections
 from mininet.cli import CLI
-
 
 import sys
 import os
@@ -110,7 +112,7 @@ def main():
     s3 = net.getNodeByName('client3')    
     control = net.getNodeByName('control')
 
-    control.cmd(cmd_control)
+    teste=control.cmd(cmd_control)
     time.sleep(2)
 
     s1.cmd(cmd_s1)

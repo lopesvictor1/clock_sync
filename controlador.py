@@ -57,7 +57,8 @@ def return_local_time(zmq_sock, f, data, identity):
 
 #funcao principal do sistema
 def main():
-    f = open('controlador.txt', 'w')
+    print("testando...................")
+    f = open('controlador.txt', 'w+')
     threading.Thread(target=count_time, args=(f,)).start()
     TIME_SUM = 0
 
@@ -71,11 +72,6 @@ def main():
         data = zmq_sock.recv()
         print("Recebido dados: " + data.decode("utf-8") + "\n")
         thread = threading.Thread(target=return_local_time, args=(zmq_sock, f, data, identity)).start()
-        
-
-
-
-
                         
 
 if __name__ == "__main__":

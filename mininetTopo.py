@@ -1,5 +1,3 @@
-#!/usr/bin/evn python                                                                            
-                                 
 #inclusão das bibliotecas necessárias no mininet
 from mininet.topo import Topo
 from mininet.net import Mininet
