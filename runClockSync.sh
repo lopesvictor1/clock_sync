@@ -21,7 +21,7 @@ s3d="NaN" #s1d==$(tail -n 1 switch3_delay.txt | grep -Po "(?<=Local time:\s)\d+"
 
 controller=$(tail -n 1 controlador.txt | grep -Po "(?<=Local time:\s)\d+")
 
-echo "#s1_normal s1_noclocksync.txt s1_delay s2_normal s2_noclocksync.txt s2_delay" >> outFile
+echo "#s1_normal s1_noclocksync.txt s1_delay s2_normal s2_noclocksync.txt s2_delay s3_normal s3_noclocksync.txt s3_delay" >> outFile
 echo $s1c $s1nc $s1d $s2c $s2nc $s2d $s3c $s3nc $s3d >> outFile
 
 
