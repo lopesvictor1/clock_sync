@@ -31,7 +31,7 @@ def count_time(f):
     GLOBAL_TIME = 0
     while(True):
         print("Local time: {}".format(GLOBAL_TIME), file=f, flush=True)
-        if count > 8:
+        if count > 17:
             valid = False
             count = 0
         GLOBAL_TIME += 6
@@ -57,8 +57,7 @@ def return_local_time(zmq_sock, f, data, identity):
 
 #funcao principal do sistema
 def main():
-    print("testando...................")
-    f = open('controlador.txt', 'w+')
+    f = open('controlador.txt', 'w')
     threading.Thread(target=count_time, args=(f,)).start()
     TIME_SUM = 0
 
@@ -72,6 +71,11 @@ def main():
         data = zmq_sock.recv()
         print("Recebido dados: " + data.decode("utf-8") + "\n")
         thread = threading.Thread(target=return_local_time, args=(zmq_sock, f, data, identity)).start()
+        
+
+
+
+
                         
 
 if __name__ == "__main__":

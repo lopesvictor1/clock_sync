@@ -1,6 +1,3 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-
 from mininet.topo import Topo
 from mininet.node import Host
 from mininet.link import TCLink
@@ -8,6 +5,7 @@ from mininet.net import Mininet
 from mininet.log import lg, info
 from mininet.util import dumpNodeConnections
 from mininet.cli import CLI
+
 
 import sys
 import os
@@ -46,7 +44,7 @@ class CustomTopo(Topo):
         self.addLink('client1', 's1', cls=TCLink, **link_parametros)
         self.addLink('client2', 's1', cls=TCLink, **link_parametros)
         if hasDelay == True:
-            link_parametros = {'delay' : '500ms'}
+            link_parametros = {'delay' : '200ms'}
         self.addLink('client3', 's1', cls=TCLink, **link_parametros)
 
 
@@ -68,9 +66,9 @@ def main():
 
     #executando com clock_sync
     if args.mode == 'clock_on':
-        os.system('sudo rm switch1_normal.txt')
-        os.system('sudo rm switch2_normal.txt')
-        os.system('sudo rm switch3_normal.txt')
+        os.system('sudo rm switch1_clock_on.txt')
+        os.system('sudo rm switch2_clock_on.txt')
+        os.system('sudo rm switch3_clock_on.txt')
         topo = CustomTopo(False)
 
         cmd_control = 'python3 controlador.py &'
@@ -78,17 +76,17 @@ def main():
         cmd_s2 = 'python3 switch.py -n 2 &'
         cmd_s3 = 'python3 switch.py -n 3 &'
 
-
     elif args.mode == 'clock_off':
-        os.system('sudo rm switch1_noclocksync.txt')
-        os.system('sudo rm switch2_noclocksync.txt')
-        os.system('sudo rm switch3_noclocksync.txt')
+        os.system('sudo rm switch1_clock_off.txt')
+        os.system('sudo rm switch2_clock_off.txt')
+        os.system('sudo rm switch3_clock_off.txt')
         topo = CustomTopo(False)
 
         cmd_control = 'python3 controlador.py &'
         cmd_s1 = 'python3 switch.py -n 1 -m clock_off &'
         cmd_s2 = 'python3 switch.py -n 2 -m clock_off &'
         cmd_s3 = 'python3 switch.py -n 3 -m clock_off &'
+
     elif args.mode == 'delay':
         os.system('sudo rm switch1_delay.txt')
         os.system('sudo rm switch2_delay.txt')
@@ -99,6 +97,7 @@ def main():
         cmd_s1 = 'python3 switch.py -n 1 -m delay &'
         cmd_s2 = 'python3 switch.py -n 2 -m delay &'
         cmd_s3 = 'python3 switch.py -n 3 -m delay &'
+
     else:
         print("Modo inválido, por favor tentar -m = 'clock_on', 'clock_off' ou 'delay'")
 
@@ -112,14 +111,14 @@ def main():
     s3 = net.getNodeByName('client3')    
     control = net.getNodeByName('control')
 
-    teste=control.cmd(cmd_control)
+    control.cmd(cmd_control)
     time.sleep(2)
 
     s1.cmd(cmd_s1)
     s2.cmd(cmd_s2)
     s3.cmd(cmd_s3)
 
-    time.sleep(60)
+    time.sleep(120)
 
     net.stop()
     

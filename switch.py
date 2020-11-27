@@ -77,14 +77,7 @@ def main():
     parser.add_argument("--mode", "-m", help=help_msg, default=DEFAULT_MODE, type=str)
     args = parser.parse_args()
 
-    execution_type = ""
-    if args.mode == 'clock_on':
-        execution_type = 'normal'
-    elif args.mode == 'clock_off':
-        execution_type = 'noclocksync'
-    elif args.mode == 'delay':
-        execution_type = 'delay'
-    f = open('switch{}_{}.txt'.format(args.number, execution_type), 'w')
+    f = open('switch{}_{}.txt'.format(args.number, args.mode), 'w')
 
     value = clocks[random.randint(0, len(clocks)-1)]
     threading.Thread(target=count_time, args=(value, f)).start()
@@ -97,13 +90,14 @@ def main():
     zmq_sock.connect("tcp://{}:{}".format(HOST, PORT))
 
     while(True):
-        if valid == False and args.mode == 'clock_on':
-            zmq_sock.send(str(LOCAL_TIME).encode("utf-8"))
-            data = zmq_sock.recv()
-            print("Recebido valor {}.".format(data.decode("utf-8")), file=f, flush=True)
-            update_local_time(data.decode("utf-8"))
-            valid = True
-            count = 0
+        if args.mode == 'clock_on' or args.mode == 'delay':
+            if valid == False:
+                zmq_sock.send(str(LOCAL_TIME).encode("utf-8"))
+                data = zmq_sock.recv()
+                print("Recebido valor {}.".format(data.decode("utf-8")), file=f, flush=True)
+                update_local_time(data.decode("utf-8"))
+                valid = True
+                count = 0
                 
         
 
