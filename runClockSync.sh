@@ -3,7 +3,7 @@
 outFile="CLOCK_SYNC.out"
 rm -rf CLOCK_SYNC.out
 
-N=3
+N=30
 ACURACIA=20 #alfa
 PRECISAO=20 #pi
 
