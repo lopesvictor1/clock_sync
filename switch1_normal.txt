@@ -1,0 +1,71 @@
+Local time: 0
+Clock: 3
+Local time: 3
+Local time: 6
+Local time: 9
+Local time: 12
+Local time: 15
+Local time: 18
+Local time: 21
+Local time: 24
+Recebido valor [21, 54, 66].
+Local time: 63
+Local time: 69
+Local time: 75
+Local time: 81
+Local time: 87
+Local time: 93
+Recebido valor [87, 90, 102].
+Local time: 102
+Local time: 108
+Local time: 114
+Local time: 120
+Local time: 126
+Local time: 132
+Recebido valor [126, 126, 138].
+Local time: 138
+Local time: 144
+Local time: 150
+Local time: 156
+Local time: 162
+Local time: 168
+Recebido valor [162, 162, 174].
+Local time: 174
+Local time: 180
+Local time: 186
+Local time: 192
+Local time: 198
+Local time: 204
+Recebido valor [198, 198, 210].
+Local time: 210
+Local time: 216
+Local time: 222
+Local time: 228
+Local time: 234
+Local time: 240
+Recebido valor [234, 234, 246].
+Local time: 246
+Local time: 252
+Local time: 258
+Local time: 264
+Local time: 270
+Local time: 276
+Recebido valor [270, 270, 282].
+Local time: 282
+Local time: 288
+Local time: 294
+Local time: 300
+Local time: 306
+Local time: 312
+Recebido valor [306, 306, 318].
+Local time: 318
+Local time: 324
+Local time: 330
+Local time: 336
+Local time: 342
+Local time: 348
+Recebido valor [342, 342, 354].
+Local time: 354
+Local time: 360
+Local time: 366
+Local time: 372

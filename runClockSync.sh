@@ -39,9 +39,9 @@ done
 avg=$(awk -v s1c=0 -v s1nc=0 -v s1d=0 -v s2c=0 -v s2nc=0 -v s2d=0 -v s3c=0 -v s3nc=0 -v s3d=0 -v controlador=0 -v prec=$PRECISAO -v accur=$ACURACIA -v exec=$N \
 'function abs(x){return ((x < 0.0) ? -x : x)} {s1c+=$2; s1nc+=$3; s1d+=$4; s2c+=$5; s2nc+=$6; s2d+=$7; s3c+=$8; \
 s3nc+=$9; s3d+=$10; controlador+=$11; count+=1} END {print exec,s1c/count,s1nc/count,s1d/count,s2c/count,s2nc/count,\
-s2d/count,s3c/count,s3nc/count,s3d/count,controlador/count,abs(s1c-s2c),abs(s1c-s3c),abs(s2c-s3c),abs(s1nc-s2nc),\
-abs(s1nc-s3nc),abs(s2nc-s3nc),abs(s1d-s2d),abs(s1d-s3d),abs(s2d-s3d),abs(s1c-controlador),abs(s2c-controlador),abs(s3c-controlador),\
-abs(s1nc-controlador),abs(s2nc-controlador),abs(s3nc-controlador),abs(s1d-controlador),abs(s2d-controlador),abs(s3d-controlador),
+s2d/count,s3c/count,s3nc/count,s3d/count,controlador/count,abs(s1c/count-s2c/count),abs(s1c/count-s3c/count),abs(s2c/count-s3c/count),abs(s1nc/count-s2nc/count),\
+abs(s1nc/count-s3nc/count),abs(s2nc/count-s3nc/count),abs(s1d/count-s2d/count),abs(s1d/count-s3d/count),abs(s2d/count-s3d/count),abs(s1c/count-controlador/count),abs(s2c/count-controlador/count),abs(s3c/count-controlador/count),\
+abs(s1nc/count-controlador/count),abs(s2nc/count-controlador/count),abs(s3nc/count-controlador/count),abs(s1d/count-controlador/count),abs(s2d/count-controlador/count),abs(s3d/count-controlador/count),
 prec,accur}' CLOCK\_SYNC\.out)
 
 echo $avg >> $outFile
